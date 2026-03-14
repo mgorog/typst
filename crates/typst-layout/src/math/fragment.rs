@@ -283,6 +283,7 @@ impl GlyphFragment {
             lang: styles.get(TextElem::lang),
             region: styles.get(TextElem::region),
             glyphs,
+            span: Some(span),
         };
 
         let c = text.chars().next().unwrap();

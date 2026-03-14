@@ -28,9 +28,35 @@ pub struct TextItem {
     /// The glyphs. The number of glyphs may be different from the number of
     /// characters in the plain text due to e.g. ligatures.
     pub glyphs: Vec<Glyph>,
+    // ID10T start
+    pub span: Option<Span>, // New field
+                            // ID10T end
 }
 
 impl TextItem {
+    pub fn new(
+        font: Font,
+        size: Abs,
+        fill: Paint,
+        stroke: Option<FixedStroke>,
+        lang: Lang,
+        region: Option<Region>,
+        text: EcoString,
+        glyphs: Vec<Glyph>,
+        span: Option<Span>,
+    ) -> Self {
+        Self {
+            font,
+            size,
+            fill,
+            stroke,
+            lang,
+            region,
+            text,
+            glyphs,
+            span,
+        }
+    }
     /// The width of the text run.
     pub fn width(&self) -> Abs {
         self.glyphs.iter().map(|g| g.x_advance).sum::<Em>().at(self.size)

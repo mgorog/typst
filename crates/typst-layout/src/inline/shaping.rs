@@ -327,6 +327,7 @@ impl<'a> ShapedText<'a> {
         spans: &SpanMapper,
         justification_ratio: f64,
         extra_justification: Abs,
+        include_spans: bool,
     ) -> Frame {
         let (top, bottom) = self.measure(engine);
         let size = Size::new(self.width(), top + bottom);
@@ -442,6 +443,11 @@ impl<'a> ShapedText<'a> {
                 stroke: stroke.clone().map(|s| s.unwrap_or_default()),
                 text: self.text[range.start - self.base..range.end - self.base].into(),
                 glyphs,
+                span: if include_spans {
+                    Some(spans.span_at(range.start).0)
+                } else {
+                    None
+                },
             };
 
             let width = item.width();

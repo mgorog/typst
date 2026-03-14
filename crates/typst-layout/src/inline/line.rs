@@ -588,6 +588,7 @@ pub fn commit(
                     &p.spans,
                     justification_ratio,
                     extra_justification,
+                    false,
                 );
                 push(&mut offset, frame, idx);
             }
