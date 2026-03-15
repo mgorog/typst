@@ -261,6 +261,37 @@ pub enum DocumentFormat {
     Html,
 }
 
+/* Commenting out this block to resolve compilation errors (E0782: expected a type, found a trait).
+   This appears to be an invalid inherent impl for a trait. If this functionality is needed,
+   consider refactoring Document to a struct or providing default trait implementations (though
+   fields like self.info suggest struct-specific logic).
+impl Document {
+    pub fn info(&self) -> &DocumentInfo {
+        &self.info
+    }
+    pub fn pages(&self) -> &Vec<Page> {
+        &self.pages
+    }
+    pub fn introspector(&self) -> &Introspector {
+        &self.introspector
+    }
+}
+*/
+
+/* Commenting out this block to resolve compilation errors (E0412: cannot find type `HtmlDocument`
+   in this scope). HtmlDocument is not defined in this file; it may be an enum variant in another
+   module (e.g., crate::routines::RealizationKind::HtmlDocument). If needed, import and refactor
+   accordingly, or move the impl to the appropriate file.
+impl HtmlDocument {
+    pub fn info(&self) -> &DocumentInfo {
+        &self.info
+    }
+    pub fn introspector(&self) -> &dyn typst::introspection::Introspector {
+        &self.introspector
+    }
+}
+*/
+
 impl DocumentFormat {
     pub fn target(self) -> Target {
         match self {
@@ -392,3 +423,4 @@ impl DocumentInfo {
         self.locale = Smart::from(locale);
     }
 }
+
