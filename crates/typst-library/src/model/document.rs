@@ -261,27 +261,6 @@ pub enum DocumentFormat {
     Html,
 }
 
-impl Document {
-    pub fn info(&self) -> &DocumentInfo {
-        &self.info
-    }
-    pub fn pages(&self) -> &Vec<Page> {
-        &self.pages
-    }
-    pub fn introspector(&self) -> &Introspector {
-        &self.introspector
-    }
-}
-
-impl HtmlDocument {
-    pub fn info(&self) -> &DocumentInfo {
-        &self.info
-    }
-    pub fn introspector(&self) -> &dyn typst::introspection::Introspector {
-        &self.introspector
-    }
-}
-
 impl DocumentFormat {
     pub fn target(self) -> Target {
         match self {
