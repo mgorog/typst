@@ -76,8 +76,11 @@ impl Document for HtmlDocument {
     fn info(&self) -> &DocumentInfo {
         &self.info
     }
-}
 
+    fn introspector(&self) -> &dyn Introspector {
+        &*self.introspector // Derefs the Arc<HtmlIntrospector> and coerces to &dyn Introspector
+    }
+}
 impl Output for HtmlDocument {
     fn introspector(&self) -> &dyn Introspector {
         self.introspector.as_ref()

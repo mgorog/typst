@@ -100,6 +100,12 @@ impl Document for BundleDocument {
             BundleDocument::Html(doc) => doc.info(),
         }
     }
+    fn introspector(&self) -> &dyn Introspector {
+        match self {
+            BundleDocument::Paged(doc, _) => &**doc.introspector(), // Deref Arc<PagedIntrospector> twice (&Arc -> &PagedIntrospector -> PagedIntrospector), then coerce to dyn
+            BundleDocument::Html(doc) => &**doc.introspector(), // Same for HtmlIntrospector
+        }
+    }
 }
 
 /// Extra data relevant for exporting a paged document in a bundle.

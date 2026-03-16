@@ -6,6 +6,7 @@ use crate::foundations::{
     Array, BundlePath, Cast, Content, Datetime, OneOrMultiple, Packed, ShowFn, ShowSet,
     Smart, StyleChain, Styles, Target, Value, cast, elem,
 };
+use crate::introspection::Introspector;
 use crate::introspection::Locatable;
 use crate::text::{Locale, TextElem};
 
@@ -353,9 +354,11 @@ cast! {
 }
 
 /// A document resulting from compilation.
-pub trait Document {
+pub trait Document: std::fmt::Debug + Clone + Send + Sync + 'static {
     /// Get the document's metadata.
     fn info(&self) -> &DocumentInfo;
+    /// required by tinymist-std (and for dyn safety)
+    fn introspector(&self) -> &dyn Introspector;
 }
 
 /// Details about the document.
@@ -423,4 +426,3 @@ impl DocumentInfo {
         self.locale = Smart::from(locale);
     }
 }
-

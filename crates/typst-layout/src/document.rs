@@ -22,16 +22,15 @@ pub struct PagedDocument {
 
 impl PagedDocument {
     /// Creates a new paged document from its parts.
-    ///
     /// Internally builds the introspector.
     pub fn new(pages: EcoVec<Page>, info: DocumentInfo) -> Self {
-        let introspector = PagedIntrospector::new(&pages);
+        let introspector = PagedIntrospector::new(&pages[..]);
         Self { pages, info, introspector: Arc::new(introspector) }
     }
 
     /// The document's finished pages.
     pub fn pages(&self) -> &[Page] {
-        &self.pages
+        &self.pages[..]
     }
 
     /// Details about the document, mutably.
@@ -57,6 +56,11 @@ impl Hash for PagedDocument {
 impl Document for PagedDocument {
     fn info(&self) -> &DocumentInfo {
         &self.info
+    }
+
+    // matches the trait added in typst-library
+    fn introspector(&self) -> &dyn Introspector {
+        &*self.introspector
     }
 }
 
