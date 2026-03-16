@@ -17,6 +17,7 @@ use crate::layout::{
 use crate::math::MathSize;
 use crate::model::{Numbering, Outlinable, ParLine, Refable, Supplement};
 use crate::text::{FontFamily, FontList, FontWeight, LocalName, Locale, TextElem};
+use typst_syntax::Span;
 
 /// A mathematical equation.
 ///
@@ -165,6 +166,12 @@ pub struct EquationElem {
     #[internal]
     #[synthesized]
     pub locale: Locale,
+
+    /// The source span.
+    #[internal]
+    #[default(None)]
+    #[ghost]
+    pub span: Option<Span>,
 }
 
 impl Synthesize for Packed<EquationElem> {
@@ -175,7 +182,7 @@ impl Synthesize for Packed<EquationElem> {
     ) -> SourceResult<()> {
         let supplement = match self.as_ref().supplement.get_ref(styles) {
             Smart::Auto => TextElem::packed(Self::local_name_in(styles)),
-            Smart::Custom(None) => Content::empty(),
+            Smart::Custom(std::option::Option::None) => Content::empty(),
             Smart::Custom(Some(supplement)) => {
                 supplement.resolve(engine, styles, [self.clone().pack()])?
             }

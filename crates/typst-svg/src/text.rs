@@ -10,6 +10,7 @@ use typst_library::visualize::{FillRule, Paint, RelativeTo};
 use crate::path::SvgPathBuilder;
 use crate::write::{SvgElem, SvgIdRef, SvgTransform};
 use crate::{DedupId, SVGRenderer, State};
+use typst_syntax::{FileId, Span};
 
 /// Represents a glyph to be rendered.
 #[derive(Clone)]
@@ -143,6 +144,16 @@ impl SVGRenderer<'_> {
             .attr("x", x_offset.to_pt())
             .attr("y", y_offset.to_pt());
 
+        if let Some(span) = text.span {
+            let id_num = span.id().map(|id| id.into_raw().get() as u64).unwrap_or(0u64);
+            let (offset, len) = if let Some(range) = span.range() {
+                (range.start as u64, (range.end - range.start) as u64)
+            } else {
+                let number = span.into_raw().get() & ((1u64 << 48) - 1);
+                (number, 1)
+            };
+            use_.attr("data-span", format!("{}:{}:{}", id_num, offset, len).as_str());
+        }
         self.write_fill(
             &mut use_,
             &text.fill,

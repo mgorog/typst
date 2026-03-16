@@ -18,6 +18,8 @@ use crate::model::Numbering;
 use crate::text::LocalName;
 use crate::visualize::Paint;
 
+use crate::introspection::Introspector;
+
 /// Layouts its child onto one or multiple pages.
 ///
 /// Although this function is primarily used in set rules to affect page
