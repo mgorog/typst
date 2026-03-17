@@ -6,6 +6,7 @@ use typst_library::layout::{Abs, Point, Ratio, Size, Transform};
 use typst_library::visualize::{
     Curve, CurveItem, FixedStroke, Geometry, LineCap, LineJoin, Paint, RelativeTo, Shape,
 };
+use typst_syntax::Span;
 use typst_utils::Numeric;
 
 impl SVGRenderer<'_> {
@@ -15,8 +16,19 @@ impl SVGRenderer<'_> {
         svg: &mut SvgElem,
         state: &State,
         shape: &Shape,
+        span: Span,
     ) {
         let svg = &mut svg.elem("path");
+        if !span.is_detached() {
+            let id_num = span.id().map(|id| id.into_raw().get() as u64).unwrap_or(0u64);
+            let (offset, len) = if let Some(range) = span.range() {
+                (range.start as u64, (range.end - range.start) as u64)
+            } else {
+                let number = span.number() & ((1u64 << 48) - 1);
+                (number, 1)
+            };
+            svg.attr("data-span", format!("{}:{}:{}", id_num, offset, len).as_str());
+        }
 
         if let Some(paint) = &shape.fill {
             self.write_fill(

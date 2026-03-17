@@ -26,6 +26,7 @@ use xmlwriter::XmlWriter;
 use crate::paint::{GradientRef, SVGSubGradient, TilingRef};
 use crate::text::RenderedGlyph;
 use crate::write::{SvgDisplay, SvgElem, SvgTransform, SvgUrl, SvgWrite};
+use typst_syntax::Span;
 
 const XML_WRITE_OPTIONS: xmlwriter::Options = xmlwriter::Options {
     use_single_quote: false,
@@ -263,7 +264,7 @@ impl<'a> SVGRenderer<'a> {
 
         if let Some(fill) = page.fill_or_white() {
             let shape = Geometry::Rect(page.frame.size()).filled(fill);
-            self.render_shape(svg.lazy(), state, &shape);
+            self.render_shape(svg.lazy(), state, &shape, Span::detached());
         }
 
         self.render_frame(svg.lazy(), state, &page.frame);
@@ -273,19 +274,20 @@ impl<'a> SVGRenderer<'a> {
     fn render_frame(&mut self, svg: &mut SvgElem, state: &State, frame: &Frame) {
         for (pos, item) in frame.items() {
             let state = state.pre_translate(*pos);
-            match item {
-                FrameItem::Group(group) => self.render_group(svg, &state, group),
-                FrameItem::Text(text) => self.render_text(svg, &state, text),
-                FrameItem::Shape(shape, _) => self.render_shape(svg, &state, shape),
-                FrameItem::Image(image, size, _) => {
-                    self.render_image(svg, &state, image, size)
+            match item.clone() {
+                FrameItem::Group(group) => self.render_group(svg, &state, &group),
+                FrameItem::Text(text) => self.render_text(svg, &state, &text),
+                FrameItem::Shape(shape, span) => {
+                    self.render_shape(svg, &state, &shape, span)
                 }
-                FrameItem::Link(dest, size) => self.render_link(svg, &state, dest, *size),
+                FrameItem::Image(image, size, _) => {
+                    self.render_image(svg, &state, &image, &size)
+                }
+                FrameItem::Link(dest, size) => self.render_link(svg, &state, &dest, size),
                 FrameItem::Tag(_) => {}
             };
         }
     }
-
     /// Render a group. If the group has `clips` set to true, a clip path will
     /// be created.
     fn render_group(&mut self, svg: &mut SvgElem, state: &State, group: &GroupItem) {

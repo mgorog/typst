@@ -129,7 +129,7 @@ impl Span {
     }
 
     /// The unique number of the span within its [`Source`](crate::Source).
-    pub(crate) const fn number(self) -> u64 {
+    pub const fn number(self) -> u64 {
         self.0.get() & Self::NUMBER_MASK
     }
 
