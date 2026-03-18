@@ -209,7 +209,12 @@ impl SVGRenderer<'_> {
                     let state = State::new(frame.size()).pre_translate(frame.item.pos());
                     match &frame.item {
                         GlyphFrameItem::Tofu(_, shape) => {
-                            self.render_shape(&mut symbol, &state, shape);
+                            self.render_shape(
+                                &mut symbol,
+                                &state,
+                                shape,
+                                Span::detached(),
+                            );
                         }
                         GlyphFrameItem::Image(_, image, size) => {
                             self.render_image(&mut symbol, &state, image, size);
