@@ -5,7 +5,7 @@ mod charsets;
 mod convert;
 mod css;
 mod document;
-mod dom;
+pub mod dom;
 mod encode;
 mod fragment;
 mod introspect;
